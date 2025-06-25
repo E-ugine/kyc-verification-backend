@@ -1,16 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import timedelta
 from .. import crud, schemas, models
 from ..database import get_db
 from ..auth import authenticate_admin, create_access_token, get_current_admin, ACCESS_TOKEN_EXPIRE_MINUTES
+from ..schemas import AdminLoginRequest
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
 @router.post("/login", response_model=schemas.Token)
-async def admin_login(username: str, password: str):
-    if not authenticate_admin(username, password):
+async def admin_login(login_data: AdminLoginRequest = Body(...)):
+    if not authenticate_admin(login_data.username, login_data.password):
         raise HTTPException(
             status_code=401,
             detail="Incorrect username or password"
@@ -18,7 +19,7 @@ async def admin_login(username: str, password: str):
     
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": username}, expires_delta=access_token_expires
+        data={"sub": login_data.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 

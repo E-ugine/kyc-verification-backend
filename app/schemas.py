@@ -33,6 +33,10 @@ class KYCStatusResponse(BaseModel):
     status: KYCStatus
     rejection_reason: Optional[str] = None
     created_at: datetime
+    
+class AdminLoginRequest(BaseModel):
+    username: str
+    password: str    
 
 class KYCVerificationRequest(BaseModel):
     status: KYCStatus
