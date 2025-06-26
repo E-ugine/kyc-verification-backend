@@ -54,3 +54,8 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: Optional[str] = None
+    
+class KYCReviewRequest(BaseModel):
+    action: KYCStatus
+    rejection_reason: Optional[str] = None
+    model_config = ConfigDict(use_enum_values=True)
