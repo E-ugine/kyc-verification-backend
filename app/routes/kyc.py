@@ -203,6 +203,46 @@ def get_pending_kyc_applications(
         limit=limit
     )
 
+@router.get("/admin/approved", response_model=List[schemas.KYCApplicationResponse])
+def get_approved_kyc_applications(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    """
+    Admin endpoint to get all approved KYC applications
+    
+    Args:
+        skip: Number of records to skip for pagination
+        limit: Maximum number of records to return
+    """
+    return crud.get_all_kyc_applications(
+        db=db, 
+        status=models.KYCStatus.APPROVED, 
+        skip=skip, 
+        limit=limit
+    )
+
+@router.get("/admin/rejected", response_model=List[schemas.KYCApplicationResponse])
+def get_rejected_kyc_applications(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    """
+    Admin endpoint to get all rejected KYC applications
+    
+    Args:
+        skip: Number of records to skip for pagination
+        limit: Maximum number of records to return
+    """
+    return crud.get_all_kyc_applications(
+        db=db, 
+        status=models.KYCStatus.REJECTED, 
+        skip=skip, 
+        limit=limit
+    )
+
 @router.get("/admin/stats", response_model=schemas.KYCStatsResponse)
 def get_kyc_statistics(db: Session = Depends(get_db)):
     """
