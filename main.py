@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from database import engine
-import models
-from routes import kyc, admin
+from app.database import engine
+from app import models
+from app.routes import kyc, admin
 import uvicorn
 import os
 
