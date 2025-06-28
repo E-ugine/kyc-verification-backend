@@ -52,5 +52,6 @@ GRANT ALL PRIVILEGES ON DATABASE kyc_verify TO your_user;
 
 ▶️ Running the Server
 
-uvicorn app.main:app --reload
+uvicorn main:app --host 0.0.0.0 --port 8000
+
 App will run on http://localhost:8000.
