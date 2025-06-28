@@ -4,6 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from .database import engine
 from . import models
 from .routes import kyc, admin
+import uvicorn
+import os
 
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
@@ -37,3 +39,13 @@ def root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
+#
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(
+        "main:app",  
+        host="0.0.0.0",
+        port=port,
+        reload=False
+    )
