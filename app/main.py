@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from .database import engine
-from . import models
-from .routes import kyc, admin
+from database import engine
+import models
+from routes import kyc, admin
 import uvicorn
 import os
 
@@ -40,7 +40,6 @@ def root():
 def health_check():
     return {"status": "healthy"}
 
-#
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(
