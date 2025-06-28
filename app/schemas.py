@@ -1,11 +1,11 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import Optional
 from datetime import datetime
 from .models import KYCStatus
 
 class KYCSubmissionRequest(BaseModel):
     full_name: str = Field(..., min_length=2, max_length=255)
-    dob: str = Field(..., pattern=r'^\d{4}-\d{2}-\d{2}$')  # YYYY-MM-DD
+    dob: str = Field(..., pattern=r'^\d{4}-\d{2}-\d{2}$')
     id_number: str = Field(..., min_length=5, max_length=50)
     country: str = Field(..., min_length=2, max_length=100)
     address: str = Field(..., min_length=10, max_length=500)
@@ -58,4 +58,22 @@ class TokenData(BaseModel):
 class KYCReviewRequest(BaseModel):
     action: KYCStatus
     rejection_reason: Optional[str] = None
+    
+    @field_validator('action')
+    @classmethod
+    def validate_action(cls, v):
+        # Ensure only APPROVED or REJECTED are allowed for review actions
+        if isinstance(v, str):
+            try:
+                enum_value = KYCStatus(v)
+            except ValueError:
+                raise ValueError("Action must be either APPROVED or REJECTED")
+        else:
+            enum_value = v
+            
+        if enum_value not in [KYCStatus.APPROVED, KYCStatus.REJECTED]:
+            raise ValueError("Action must be either APPROVED or REJECTED")
+        
+        return enum_value
+    
     model_config = ConfigDict(use_enum_values=True)

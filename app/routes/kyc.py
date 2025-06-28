@@ -153,18 +153,18 @@ def review_kyc_application(
             detail=f"Cannot review application with status: {existing_application.status.value}"
         )
     
-    # Validate action
-    if review_data.action not in ["APPROVED", "REJECTED"]:
-        raise HTTPException(
-            status_code=400,
-            detail="Action must be either APPROVED or REJECTED"
-        )
-    
     # Validate rejection reason if rejecting
     if review_data.action == models.KYCStatus.REJECTED and not review_data.rejection_reason:
         raise HTTPException(
             status_code=400,
             detail="Rejection reason is required when rejecting an application"
+        )
+    
+    # Validate that rejection reason is not provided when approving
+    if review_data.action == models.KYCStatus.APPROVED and review_data.rejection_reason:
+        raise HTTPException(
+            status_code=400,
+            detail="Rejection reason should not be provided when approving an application"
         )
     
     # Update the application status

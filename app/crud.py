@@ -44,8 +44,15 @@ def update_kyc_status(db: Session, kyc_id: int, status: models.KYCStatus,
     ).first()
     if db_kyc:
         db_kyc.status = status
-        if rejection_reason:
+        
+        # Handle rejection_reason based on status
+        if status == models.KYCStatus.REJECTED:
+            # For rejected status, rejection_reason should be provided
             db_kyc.rejection_reason = rejection_reason
+        else:
+            # For APPROVED or PENDING status, clear rejection_reason
+            db_kyc.rejection_reason = None
+            
         db.commit()
         db.refresh(db_kyc)
     return db_kyc
