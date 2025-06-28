@@ -8,3 +8,4 @@ passlib[bcrypt]==1.7.4
 python-decouple==3.8
 faker==30.8.2
 pillow==11.0.0
+python-multipart
