@@ -19,7 +19,7 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080", "http://localhost:5173", "https://kyc-verification-frontend.vercel.app/"],
+    allow_origins=["http://localhost:8080", "http://localhost:5173", "https://kyc-verification-frontend.vercel.app"],
     allow_credentials=True,
     allow_methods=["POST", "GET", "OPTIONS", "PUT", "DELETE"],
     allow_headers=["*"],
