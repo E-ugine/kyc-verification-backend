@@ -15,7 +15,7 @@ class KYCApplicationResponse(BaseModel):
     
     id: int
     full_name: str
-    dob: str  # This will receive a date object from the database
+    dob: date 
     id_number: str
     country: str
     address: str
