@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field, ConfigDict, field_validator
+from pydantic import BaseModel, Field, ConfigDict, field_validator, field_serializer
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, date
 from .models import KYCStatus
 
 class KYCSubmissionRequest(BaseModel):
@@ -15,7 +15,7 @@ class KYCApplicationResponse(BaseModel):
     
     id: int
     full_name: str
-    dob: str
+    dob: str  # This will receive a date object from the database
     id_number: str
     country: str
     address: str
@@ -25,6 +25,13 @@ class KYCApplicationResponse(BaseModel):
     rejection_reason: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
+    
+    @field_serializer('dob')
+    def serialize_dob(self, value: date) -> str:
+        """Convert date object to string in YYYY-MM-DD format"""
+        if isinstance(value, date):
+            return value.strftime('%Y-%m-%d')
+        return value
 
 class KYCStatusResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
