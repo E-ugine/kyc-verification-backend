@@ -9,3 +9,4 @@ python-decouple==3.8
 faker==30.8.2
 pillow==11.0.0
 python-multipart
+alembic==1.12.0
