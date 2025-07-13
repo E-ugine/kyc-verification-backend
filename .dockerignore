@@ -1,9 +1,25 @@
-__pycache__
+# Bytecode & env
+__pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.db
 .env
-.env.*
-venv
-.git
+venv/
+.env.local
+
+# Alembic junk not needed in the image
+alembic/versions/
+
+# Node stuff (if any)
+node_modules/
+npm-debug.log
+
+# IDE/Editor configs
+.vscode/
+.idea/
+
+# Git
+.git/
 .gitignore
+.DS_Store

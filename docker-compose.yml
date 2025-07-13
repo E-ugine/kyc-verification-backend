@@ -11,6 +11,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kyc_user -d kyc_verify"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: .
@@ -18,11 +23,12 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    
     environment:
-      DATABASE_URL: postgresql://kyc_user:Strong1221!@db:5432/kyc_verify
       SECRET_KEY: qs6_5W9Qz9BuEX1pG0MRX9wUIl47_O2wRObCUcx4r0c
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
 volumes:
   postgres_data:
