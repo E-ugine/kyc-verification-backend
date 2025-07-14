@@ -1,0 +1,52 @@
+name: Auto Versioning
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write  # needed to push tags
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          git fetch --tags
+          latest_tag=$(git tag --sort=-v:refname | head -n 1)
+          echo "Latest tag: $latest_tag"
+          echo "tag=$latest_tag" >> $GITHUB_OUTPUT
+
+      - name: Generate new version tag
+        id: new_tag
+        run: |
+          old_tag=${{ steps.get_tag.outputs.tag }}
+          if [[ -z "$old_tag" ]]; then
+            new_tag="v0.1.0"
+          else
+            version=$(echo $old_tag | sed 's/^v//')
+            IFS='.' read -ra parts <<< "$version"
+            major=${parts[0]}
+            minor=${parts[1]}
+            patch=${parts[2]}
+            patch=$((patch + 1))
+            new_tag="v$major.$minor.$patch"
+          fi
+          echo "New tag: $new_tag"
+          echo "tag=$new_tag" >> $GITHUB_OUTPUT
+
+      - name: Create Git tag
+        run: |
+          git tag ${{ steps.new_tag.outputs.tag }}
+          git push origin ${{ steps.new_tag.outputs.tag }}
